@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema domótico inteligente con ESP32 - Control automatizado de tu hogar">
+    <meta name="keywords" content="ESP32, domótica, IoT, casa inteligente, Arduino, automatización">
+    <meta name="author" content="Smart Home ESP32">
+    
+    <title>ESP32 Smart Home - Sistema Domótico Inteligente</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="https://i.postimg.cc/tRL26mng/image-f-Hj-K7v-Rx-1768410739790-raw.jpg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <!-- ============================================ -->
+    <!-- LOADER INICIAL -->
+    <!-- ============================================ -->
+    <div id="loader" class="loader-container">
+        <div class="loader-tech">
+            <div class="circuit-board"></div>
+            <div class="loader-chip">
+                <div class="chip-pins"></div>
+                <span>ESP32</span>
+            </div>
+            <div class="loader-text">Inicializando sistema...</div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- NAVBAR -->
+    <!-- ============================================ -->
+    <nav id="navbar" class="navbar">
+        <div class="container navbar-content">
+            <div class="logo">
+                <img src="https://i.postimg.cc/tRL26mng/image-f-Hj-K7v-Rx-1768410739790-raw.jpg" alt="Logo ESP32" class="logo-img">
+                <span id="project-name">ESP32 Smart Home</span>
+            </div>
+            
+            <div id="nav-links" class="nav-links">
+                <a href="#home" class="nav-link">Inicio</a>
+                <a href="#features" class="nav-link">Funciones</a>
+                <a href="#specs" class="nav-link">Especificaciones</a>
+                <a href="#demo" class="nav-link">Demo</a>
+                <a href="#about" class="nav-link">Proyecto</a>
+            </div>
+
+            <div class="nav-actions">
+                <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="menu-toggle" class="menu-toggle" aria-label="Menú">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================ -->
+    <!-- HERO SECTION -->
+    <!-- ============================================ -->
+    <section id="home" class="hero">
+        <div class="hero-bg">
+            <div class="grid-pattern"></div>
+            <div class="tech-particles"></div>
+        </div>
+        
+        <div class="container hero-content">
+            <div class="hero-badge animate-fade-in">
+                <i class="fas fa-microchip"></i>
+                <span>Powered by ESP32</span>
+            </div>
+            
+            <h1 class="hero-title animate-fade-in-delay">
+                <span class="gradient-text">Sistema Domótico</span><br>
+                <span class="outline-text">Inteligente</span>
+            </h1>
+            
+            <p class="hero-subtitle animate-fade-in-delay-2">
+                Control total de tu hogar desde Telegram con tecnología ESP32
+            </p>
+            
+            <p class="hero-description animate-fade-in-delay-3">
+                Sistema automatizado con 8 funciones integradas, pantalla OLED, 
+                asistente por voz y control remoto. La domótica del futuro en tus manos.
+            </p>
+            
+            <div class="hero-buttons animate-fade-in-delay-4">
+                <button class="btn btn-primary" onclick="scrollToSection('features')">
+                    <i class="fas fa-rocket"></i>
+                    Ver Funciones
+                </button>
+                <button class="btn btn-outline" onclick="scrollToSection('demo')">
+                    <i class="fab fa-telegram"></i>
+                    Probar Demo
+                </button>
+            </div>
+            
+            <div class="hero-stats animate-fade-in-delay-5">
+                <div class="stat-item">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Funciones</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Monitoreo</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Automatizado</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down bounce"></i>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- FUNCIONES DEL SISTEMA -->
+    <!-- ============================================ -->
+    <section id="features" class="section features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-cogs"></i>
+                    Funciones del Sistema
+                </h2>
+                <p class="section-subtitle">8 módulos inteligentes integrados en un solo dispositivo</p>
+            </div>
+            
+            <div id="features-grid" class="features-grid">
+                <!-- Las funciones se cargan dinámicamente desde config.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- CARACTERÍSTICAS TÉCNICAS -->
+    <!-- ============================================ -->
+    <section id="specs" class="section specs-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-microchip"></i>
+                    Especificaciones Técnicas
+                </h2>
+                <p class="section-subtitle">Hardware y tecnologías utilizadas</p>
+            </div>
+            
+            <div class="specs-container">
+                <div class="specs-visual">
+                    <div class="esp32-chip">
+                        <div class="chip-label">ESP32</div>
+                        <div class="chip-specs">
+                            <span>Dual Core 240MHz</span>
+                            <span>WiFi + Bluetooth</span>
+                            <span>520KB RAM</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="specs-list">
+                    <div class="spec-category">
+                        <h3><i class="fas fa-microchip"></i> Microcontrolador</h3>
+                        <ul id="specs-mcu">
+                            <!-- Carga dinámica desde config.js -->
+                        </ul>
+                    </div>
+                    
+                    <div class="spec-category">
+                        <h3><i class="fas fa-plug"></i> Sensores & Actuadores</h3>
+                        <ul id="specs-sensors">
+                            <!-- Carga dinámica desde config.js -->
+                        </ul>
+                    </div>
+                    
+                    <div class="spec-category">
+                        <h3><i class="fas fa-wifi"></i> Comunicación</h3>
+                        <ul id="specs-comm">
+                            <!-- Carga dinámica desde config.js -->
+                        </ul>
+                    </div>
+                    
+                    <div class="spec-category">
+                        <h3><i class="fas fa-desktop"></i> Interfaz Usuario</h3>
+                        <ul id="specs-ui">
+                            <!-- Carga dinámica desde config.js -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- DEMO / TELEGRAM -->
+    <!-- ============================================ -->
+    <section id="demo" class="section demo-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fab fa-telegram"></i>
+                    Control por Telegram
+                </h2>
+                <p class="section-subtitle">Controla tu hogar desde cualquier lugar del mundo</p>
+            </div>
+            
+            <div class="demo-container">
+                <div class="demo-phone">
+                    <div class="phone-frame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-screen">
+                            <div class="telegram-chat">
+                                <div class="telegram-header">
+                                    <img src="https://i.postimg.cc/tRL26mng/image-f-Hj-K7v-Rx-1768410739790-raw.jpg" alt="Bot">
+                                    <div>
+                                        <div class="bot-name">ESP32 Smart Home Bot</div>
+                                        <div class="bot-status">En línea</div>
+                                    </div>
+                                </div>
+                                <div class="telegram-messages" id="telegram-messages">
+                                    <!-- Mensajes de demo -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="demo-info">
+                    <h3>¿Cómo funciona?</h3>
+                    <div class="demo-steps">
+                        <div class="demo-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Conecta tu ESP32</h4>
+                                <p>Configura tu red WiFi y conecta el dispositivo</p>
+                            </div>
+                        </div>
+                        <div class="demo-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Abre Telegram</h4>
+                                <p>Busca el bot y envía /start para comenzar</p>
+                            </div>
+                        </div>
+                        <div class="demo-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>¡Controla todo!</h4>
+                                <p>Usa comandos de voz o botones para controlar</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="demo-commands">
+                        <h4>Comandos disponibles:</h4>
+                        <div class="command-list">
+                            <code>/alimentar</code>
+                            <code>/regar</code>
+                            <code>/temperatura</code>
+                            <code>/luces</code>
+                            <code>/alarma</code>
+                            <code>/contador</code>
+                            <code>/gas</code>
+                            <code>/tacho</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SOBRE EL PROYECTO -->
+    <!-- ============================================ -->
+    <section id="about" class="section about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-content">
+                    <h2 class="section-title">
+                        <i class="fas fa-project-diagram"></i>
+                        Sobre el Proyecto
+                    </h2>
+                    <p class="about-text">
+                        Este sistema domótico inteligente fue desarrollado utilizando la potente 
+                        plataforma <strong>ESP32</strong>, combinando hardware de última generación 
+                        con software optimizado para crear una solución de automatización del hogar 
+                        accesible y eficiente.
+                    </p>
+                    <p class="about-text">
+                        El proyecto integra <strong>8 funciones principales</strong> que cubren las 
+                        necesidades más importantes de un hogar moderno: desde el cuidado de mascotas 
+                        y plantas, hasta sistemas de seguridad y monitoreo ambiental.
+                    </p>
+                    <p class="about-text">
+                        La comunicación se realiza a través de <strong>Telegram</strong>, permitiendo 
+                        control remoto desde cualquier lugar. Además, cuenta con una pantalla 
+                        <strong>OLED</strong> para feedback visual y un sistema de <strong>alertas 
+                        sonoras</strong> para notificaciones importantes.
+                    </p>
+                    
+                    <div class="about-highlights">
+                        <div class="highlight">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Open Source</span>
+                        </div>
+                        <div class="highlight">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Bajo Consumo</span>
+                        </div>
+                        <div class="highlight">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Modular</span>
+                        </div>
+                        <div class="highlight">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Expandible</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-tech">
+                    <div class="tech-stack">
+                        <h3>Stack Tecnológico</h3>
+                        <div class="tech-item">
+                            <i class="fas fa-microchip"></i>
+                            <div>
+                                <strong>ESP32</strong>
+                                <span>Microcontrolador principal</span>
+                            </div>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fab fa-telegram"></i>
+                            <div>
+                                <strong>Telegram Bot API</strong>
+                                <span>Control remoto</span>
+                            </div>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-tv"></i>
+                            <div>
+                                <strong>Pantalla OLED</strong>
+                                <span>Feedback visual</span>
+                            </div>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-code"></i>
+                            <div>
+                                <strong>Arduino IDE</strong>
+                                <span>Programación C++</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- FOOTER -->
+    <!-- ============================================ -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <img src="https://i.postimg.cc/tRL26mng/image-f-Hj-K7v-Rx-1768410739790-raw.jpg" alt="Logo" class="footer-logo">
+                    <h3 id="footer-project-name">ESP32 Smart Home</h3>
+                    <p>Sistema domótico inteligente con tecnología ESP32</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul class="footer-links">
+                        <li><a href="#features">Funciones</a></li>
+                        <li><a href="#specs">Especificaciones</a></li>
+                        <li><a href="#demo">Demo</a></li>
+                        <li><a href="#about">Sobre el Proyecto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Recursos</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" target="_blank">Documentación</a></li>
+                        <li><a href="#" target="_blank">GitHub Repository</a></li>
+                        <li><a href="#" target="_blank">Tutorial de Instalación</a></li>
+                        <li><a href="#" target="_blank">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <div class="social-links">
+                        <a href="#" target="_blank" rel="noopener noreferrer" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" target="_blank" rel="noopener noreferrer" title="Telegram">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                        <a href="#" target="_blank" rel="noopener noreferrer" title="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" target="_blank" rel="noopener noreferrer" title="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 <span id="footer-copyright">ESP32 Smart Home</span>. Proyecto Open Source.</p>
+                <p class="footer-tech">Built with <i class="fas fa-heart"></i> and ESP32</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================ -->
+    <!-- CHATBOT ASISTENTE -->
+    <!-- ============================================ -->
+    <button id="chatbot-toggle" class="chatbot-toggle" aria-label="Asistente">
+        <i class="fas fa-robot"></i>
+    </button>
+
+    <div id="chatbot-container" class="chatbot-container hidden">
+        <div class="chatbot-header">
+            <div class="bot-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div>
+                <h3>Asistente ESP32</h3>
+                <span class="bot-status-text">En línea</span>
+            </div>
+            <button id="chatbot-close" aria-label="Cerrar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div id="chatbot-messages" class="chatbot-messages">
+            <!-- Los mensajes se agregan dinámicamente -->
+        </div>
+
+        <div id="chatbot-options" class="chatbot-options">
+            <!-- Las opciones se cargan desde config.js -->
+        </div>
+
+        <div class="chatbot-input">
+            <input 
+                type="text" 
+                id="chatbot-input-field" 
+                placeholder="Escribe tu pregunta..."
+                autocomplete="off"
+            >
+            <button id="chatbot-send">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SCRIPTS -->
+    <!-- ============================================ -->
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
