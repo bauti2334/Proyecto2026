@@ -266,7 +266,7 @@ const CONFIG = {
         animationSpeed: 300,
         
         // Tiempo del loader (ms)
-        loaderDuration: 2500,
+        loaderDuration: 1200,
         
         // Idioma
         language: "es",
@@ -297,23 +297,4 @@ const CONFIG = {
    ============================================ */
 
 // Hacer CONFIG disponible globalmente
-if (typeof window !== 'undefined') {
-    window.CONFIG = CONFIG;
-}
-
-// Aplicar configuración al cargar
-if (typeof document !== 'undefined') {
-    document.addEventListener('DOMContentLoaded', function() {
-        // Aplicar colores CSS dinámicamente
-        const root = document.documentElement;
-        if (CONFIG.colors) {
-            root.style.setProperty('--color-primary', CONFIG.colors.primary);
-            root.style.setProperty('--color-secondary', CONFIG.colors.secondary);
-            root.style.setProperty('--color-accent', CONFIG.colors.accent);
-        }
-        
-        console.log('%c🤖 ESP32 Smart Home System', 'color: #00d4ff; font-size: 20px; font-weight: bold;');
-        console.log('%c⚡ Version ' + CONFIG.version, 'color: #7c3aed; font-size: 14px;');
-        console.log('%c✨ Developed by ' + CONFIG.author, 'color: #ff006e; font-size: 12px;');
-    });
-}
+window.CONFIG = CONFIG;
