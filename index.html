@@ -3,481 +3,722 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Sistema domótico inteligente con ESP32 - Control automatizado de tu hogar">
-    <meta name="keywords" content="ESP32, domótica, IoT, casa inteligente, Arduino, automatización">
-    <meta name="author" content="Smart Home ESP32">
-    
-    <title>ESP32 Smart Home - Sistema Domótico Inteligente</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" href="https://i.postimg.cc/tRL26mng/image-f-Hj-K7v-Rx-1768410739790-raw.jpg">
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Icons CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- CSS -->
-    <link rel="stylesheet" href="style.css">
+    <title>BOTHOGAR - Tu hogar inteligente</title>
+    <style>
+        :root {
+            --primary: #0f172e;
+            --secondary: #1a2847;
+            --accent: #00d9ff;
+            --accent-alt: #00ff88;
+            --text-light: #e0e0e0;
+            --text-dark: #0f172e;
+            --bg-light: #ffffff;
+            --bg-dark: #0a0e1a;
+            --card-light: #f5f7fa;
+            --card-dark: #1a2847;
+            --border: #2a3f5f;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-light); color: var(--text-dark); line-height: 1.6; transition: background 0.3s, color 0.3s; }
+        body.dark-mode { background: var(--bg-dark); color: var(--text-light); }
+
+        /* NAVBAR */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        body.dark-mode nav { background: rgba(10, 14, 26, 0.95); box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3); }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        body.dark-mode .navbar-brand { color: var(--accent); }
+        .navbar-brand img { width: 40px; height: 40px; border-radius: 8px; }
+
+        .navbar-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .navbar-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        body.dark-mode .navbar-links a { color: var(--text-light); }
+        .navbar-links a:hover, .navbar-links a.active { color: var(--accent); }
+        .navbar-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+        .navbar-links a:hover::after, .navbar-links a.active::after { width: 100%; }
+
+        .navbar-controls { display: flex; gap: 1rem; align-items: center; }
+        .theme-toggle, .menu-toggle { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-dark); transition: transform 0.3s; }
+        body.dark-mode .theme-toggle { color: var(--accent); }
+        .menu-toggle { display: none; }
+        .theme-toggle:hover { transform: rotate(20deg); }
+
+        /* HERO */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4rem 2rem;
+            min-height: 90vh;
+            background: linear-gradient(135deg, var(--bg-light) 0%, var(--card-light) 100%);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        body.dark-mode .hero { background: linear-gradient(135deg, var(--bg-dark) 0%, var(--secondary) 100%); }
+
+        .hero-content { flex: 1; max-width: 600px; animation: slideInLeft 0.8s ease-out; }
+        .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem; color: var(--primary); line-height: 1.2; }
+        body.dark-mode .hero h1 { color: var(--text-light); }
+
+        .hero .slogan { font-size: 1.3rem; color: var(--accent); font-weight: 600; margin-bottom: 1.5rem; }
+        .hero p { font-size: 1.1rem; color: #666; margin-bottom: 2rem; line-height: 1.8; }
+        body.dark-mode .hero p { color: var(--text-light); }
+
+        .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .btn { padding: 0.9rem 2rem; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-block; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent) 0%, #00b8cc 100%); color: var(--primary); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3); }
+        .btn-secondary { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+        .btn-secondary:hover { background: var(--accent); color: var(--primary); transform: translateY(-3px); }
+
+        .hero-image { flex: 1; display: flex; justify-content: center; align-items: center; animation: slideInRight 0.8s ease-out; }
+        .hero-image img { width: 100%; max-width: 450px; height: auto; filter: drop-shadow(0 20px 40px rgba(0, 217, 255, 0.2)); }
+
+        /* SECTIONS */
+        section { padding: 4rem 2rem; animation: fadeIn 0.8s ease-in-out; }
+        .section-title { text-align: center; font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; color: var(--primary); }
+        body.dark-mode .section-title { color: var(--text-light); }
+        .section-subtitle { text-align: center; font-size: 1.1rem; color: #666; margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+        body.dark-mode .section-subtitle { color: var(--text-light); }
+
+        /* ABOUT */
+        .about { background: var(--card-light); }
+        body.dark-mode .about { background: var(--secondary); }
+        .about-content { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .about-text h3 { font-size: 1.8rem; margin-bottom: 1rem; color: var(--primary); }
+        body.dark-mode .about-text h3 { color: var(--accent); }
+        .about-list { list-style: none; margin-top: 1.5rem; }
+        .about-list li { padding: 0.8rem 0; display: flex; gap: 1rem; }
+        .about-list li::before { content: '✓'; color: var(--accent); font-weight: bold; font-size: 1.3rem; }
+
+        /* FEATURES */
+        .features { background: var(--bg-light); }
+        body.dark-mode .features { background: var(--bg-dark); }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+
+        .feature-card {
+            background: var(--card-light);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-mode .feature-card { background: var(--card-dark); border-color: var(--border); }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+            transform: translateX(-100%);
+            transition: transform 0.3s;
+        }
+        .feature-card:hover::before { transform: translateX(0); }
+        .feature-card:hover { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0, 217, 255, 0.15); }
+        .feature-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .feature-card h3 { font-size: 1.3rem; margin-bottom: 0.8rem; color: var(--primary); }
+        body.dark-mode .feature-card h3 { color: var(--accent); }
+        .feature-card p { color: #666; font-size: 0.95rem; }
+        body.dark-mode .feature-card p { color: var(--text-light); }
+
+        /* GALLERY */
+        .gallery { background: var(--bg-light); }
+        body.dark-mode .gallery { background: var(--bg-dark); }
+        .gallery-container { max-width: 1200px; margin: 0 auto; }
+        .gallery-section { margin-bottom: 3rem; padding: 2rem; background: var(--card-light); border-radius: 12px; }
+        body.dark-mode .gallery-section { background: var(--secondary); }
+        .gallery-section-title { font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--primary); }
+        body.dark-mode .gallery-section-title { color: var(--accent); }
+
+        .videos-grid, .logos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+
+        .video-card, .logo-card {
+            background: var(--bg-light);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        body.dark-mode .video-card, body.dark-mode .logo-card { background: var(--card-dark); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
+        .video-card:hover, .logo-card:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(0, 217, 255, 0.2); }
+
+        .video-thumbnail, .logo-display {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--accent) 0%, #00b8cc 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .video-thumbnail::before {
+            content: '▶';
+            color: white;
+            font-size: 2rem;
+        }
+
+        .video-info, .logo-info { padding: 1.5rem; }
+        .video-info h4, .logo-info h4 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--primary); }
+        body.dark-mode .video-info h4, body.dark-mode .logo-info h4 { color: var(--accent); }
+        .video-info p, .logo-info p { font-size: 0.9rem; color: #666; }
+        body.dark-mode .video-info p, body.dark-mode .logo-info p { color: var(--text-light); }
+
+        .folder-section {
+            background: var(--bg-light);
+            padding: 2.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid var(--accent);
+        }
+        body.dark-mode .folder-section { background: var(--card-dark); }
+
+        /* RESOURCES */
+        .resources { background: var(--card-light); }
+        body.dark-mode .resources { background: var(--secondary); }
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .resource-card {
+            background: var(--bg-light);
+            padding: 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            border: 2px solid transparent;
+            color: inherit;
+        }
+
+        body.dark-mode .resource-card { background: var(--card-dark); }
+        .resource-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+            box-shadow: 0 12px 30px rgba(0, 217, 255, 0.2);
+        }
+
+        .resource-icon { font-size: 2.5rem; }
+        .resource-card h3 { color: var(--primary); margin: 0; }
+        body.dark-mode .resource-card h3 { color: var(--accent); }
+        .resource-card p { color: #666; font-size: 0.95rem; margin: 0; }
+        body.dark-mode .resource-card p { color: var(--text-light); }
+
+        /* CHATBOT */
+        .chatbot { background: var(--card-light); }
+        body.dark-mode .chatbot { background: var(--secondary); }
+
+        .chat-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--bg-light);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+        }
+
+        body.dark-mode .chat-container { background: var(--secondary); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--accent) 0%, #00b8cc 100%);
+            color: var(--primary);
+            padding: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .chat-messages { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+        .message { display: flex; gap: 0.8rem; margin-bottom: 0.5rem; animation: slideIn 0.3s ease-out; }
+        .message.user { justify-content: flex-end; }
+
+        .message-content { max-width: 70%; padding: 0.8rem 1rem; border-radius: 12px; word-wrap: break-word; }
+        .message.bot .message-content { background: var(--card-light); color: var(--text-dark); }
+        body.dark-mode .message.bot .message-content { background: var(--card-dark); color: var(--text-light); }
+        .message.user .message-content { background: linear-gradient(135deg, var(--accent) 0%, #00b8cc 100%); color: var(--primary); }
+
+        .chat-input-area { padding: 1rem; border-top: 1px solid #e0e0e0; display: flex; gap: 0.5rem; }
+        body.dark-mode .chat-input-area { border-top-color: var(--border); }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: var(--card-light);
+            color: var(--text-dark);
+        }
+
+        body.dark-mode .chat-input-area input { background: var(--card-dark); color: var(--text-light); border-color: var(--border); }
+        .chat-input-area input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1); }
+
+        .chat-input-area button {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .chat-input-area button:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0, 217, 255, 0.3); }
+
+        /* CONTACT */
+        .contact { background: var(--bg-light); }
+        body.dark-mode .contact { background: var(--bg-dark); }
+
+        .contact-content { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; max-width: 1000px; margin: 0 auto; }
+        .contact-info h3 { font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--primary); }
+        body.dark-mode .contact-info h3 { color: var(--accent); }
+
+        .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { margin-bottom: 0.5rem; font-weight: 500; color: var(--text-dark); }
+        body.dark-mode .form-group label { color: var(--text-light); }
+
+        .form-group input, .form-group textarea {
+            padding: 0.8rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        body.dark-mode .form-group input, body.dark-mode .form-group textarea {
+            background: var(--secondary);
+            color: var(--text-light);
+            border-color: var(--border);
+        }
+
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1); }
+        .form-group textarea { resize: vertical; min-height: 120px; }
+
+        /* FOOTER */
+        footer { background: var(--primary); color: var(--text-light); text-align: center; padding: 2rem; margin-top: 3rem; }
+        body.dark-mode footer { background: var(--bg-dark); border-top: 1px solid var(--border); }
+
+        /* ANIMATIONS */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInLeft { from { transform: translateX(-50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideInRight { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .scroll-animate { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .scroll-animate.visible { opacity: 1; transform: translateY(0); }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .navbar-links { display: none; }
+            .menu-toggle { display: block; }
+            .navbar-links.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.98);
+                padding: 1.5rem;
+                gap: 1rem;
+            }
+            body.dark-mode .navbar-links.active { background: rgba(10, 14, 26, 0.98); }
+            .hero { flex-direction: column; padding: 2rem; min-height: auto; }
+            .hero h1 { font-size: 2.2rem; }
+            .hero-image { margin-top: 2rem; }
+            .hero-image img { max-width: 300px; }
+            .about-content, .contact-content { grid-template-columns: 1fr; }
+            .section-title { font-size: 1.8rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .message-content { max-width: 85%; }
+        }
+    </style>
 </head>
 <body>
-    
-    <!-- ============================================ -->
-    <!-- LOADER INICIAL -->
-    <!-- ============================================ -->
-    <div id="loader" class="loader-container">
-        <div class="loader-tech">
-            <div class="circuit-board"></div>
-            <div class="loader-chip">
-                <div class="chip-pins"></div>
-                <span>ESP32</span>
-            </div>
-            <div class="loader-text">Inicializando sistema...</div>
-        </div>
-    </div>
-
-    <!-- ============================================ -->
-    <!-- NAVBAR -->
-    <!-- ============================================ -->
-    <nav id="navbar" class="navbar">
-        <div class="container navbar-content">
-            <div class="logo">
-                <img src="https://i.postimg.cc/tRL26mng/image-f-Hj-K7v-Rx-1768410739790-raw.jpg" alt="Logo ESP32" class="logo-img">
-                <span id="project-name">ESP32 Smart Home</span>
-            </div>
-            
-            <div id="nav-links" class="nav-links">
-                <a href="#home" class="nav-link">Inicio</a>
-                <a href="#features" class="nav-link">Funciones</a>
-                <a href="#specs" class="nav-link">Especificaciones</a>
-                <a href="#demo" class="nav-link">Demo</a>
-                <a href="#about" class="nav-link">Proyecto</a>
-            </div>
-
-            <div class="nav-actions">
-                <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <button id="menu-toggle" class="menu-toggle" aria-label="Menú">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
+    <nav>
+        <a href="#home" class="navbar-brand">
+            <img src="https://i.postimg.cc/PrxWbkb9/image-f-Hj-K7v-Rx-1768410739790-raw.jpg" alt="Logo">
+            <span>BOTHOGAR</span>
+        </a>
+        <ul class="navbar-links" id="navbar-links">
+            <li><a href="#home" class="nav-link active">Inicio</a></li>
+            <li><a href="#about" class="nav-link">Proyecto</a></li>
+            <li><a href="#features" class="nav-link">Funciones</a></li>
+            <li><a href="#gallery" class="nav-link">Galería</a></li>
+            <li><a href="#chatbot" class="nav-link">Chat</a></li>
+            <li><a href="#contact" class="nav-link">Contacto</a></li>
+        </ul>
+        <div class="navbar-controls">
+            <button class="theme-toggle" id="theme-toggle">🌙</button>
+            <button class="menu-toggle" id="menu-toggle">☰</button>
         </div>
     </nav>
 
-    <!-- ============================================ -->
-    <!-- HERO SECTION -->
-    <!-- ============================================ -->
-    <section id="home" class="hero">
-        <div class="hero-bg">
-            <div class="grid-pattern"></div>
-            <div class="tech-particles"></div>
+    <section id="home" class="hero scroll-animate">
+        <div class="hero-content">
+            <h1>BOTHOGAR</h1>
+            <p class="slogan">Tu hogar, conectado e inteligente</p>
+            <p>Asistente doméstico inteligente basado en ESP32. Controla luces, sensores, alarmas y más desde cualquier lugar.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">Ver Proyecto</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('chatbot').scrollIntoView({behavior:'smooth'})">Probar Bot</button>
+            </div>
         </div>
+        <div class="hero-image">
+            <img src="https://i.postimg.cc/PrxWbkb9/image-f-Hj-K7v-Rx-1768410739790-raw.jpg" alt="BOTHOGAR">
+        </div>
+    </section>
+
+    <section id="about" class="about scroll-animate">
+        <h2 class="section-title">¿Qué es BOTHOGAR?</h2>
+        <p class="section-subtitle">Un sistema inteligente que transforma tu hogar en un espacio conectado y automatizado</p>
+        <div class="about-content">
+            <div class="about-text">
+                <h3>Sistema Doméstico Inteligente</h3>
+                <p>BOTHOGAR es un asistente doméstico basado en ESP32 que permite controlar y automatizar diversos aspectos de tu hogar remotamente. Desde iluminación inteligente hasta control de temperatura, todo en tus manos.</p>
+                <ul class="about-list">
+                    <li>Control remoto de dispositivos</li>
+                    <li>Automatización inteligente</li>
+                    <li>Conversación tipo chatbot</li>
+                    <li>Bajo consumo de energía</li>
+                    <li>Escalable y modular</li>
+                </ul>
+            </div>
+            <div class="about-text">
+                <h3>Tecnología Detrás</h3>
+                <p>El ESP32 es el corazón de BOTHOGAR. Este poderoso microcontrolador permite:</p>
+                <ul class="about-list">
+                    <li>Conectividad WiFi y Bluetooth</li>
+                    <li>Procesamiento de lenguaje natural</li>
+                    <li>Manejo de múltiples sensores</li>
+                    <li>Integración con APIs externas</li>
+                    <li>Bajo costo y consumo eficiente</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features scroll-animate">
+        <h2 class="section-title">Funciones Principales</h2>
+        <p class="section-subtitle">Todo lo que necesitas para automatizar tu hogar</p>
+        <div class="features-grid" id="features-grid"></div>
+    </section>
+
+    <section id="gallery" class="gallery scroll-animate">
+        <h2 class="section-title">Galería Multimedia</h2>
+        <p class="section-subtitle">Videos, logotipos y recursos del proyecto</p>
         
-        <div class="container hero-content">
-            <div class="hero-badge animate-fade-in">
-                <i class="fas fa-microchip"></i>
-                <span>Powered by ESP32</span>
+        <div class="gallery-container">
+            <div class="gallery-section">
+                <h3 class="gallery-section-title">🎬 Videos</h3>
+                <div class="videos-grid" id="videos-grid"></div>
             </div>
-            
-            <h1 class="hero-title animate-fade-in-delay">
-                <span class="gradient-text">Sistema Domótico</span><br>
-                <span class="outline-text">Inteligente</span>
-            </h1>
-            
-            <p class="hero-subtitle animate-fade-in-delay-2">
-                Control total de tu hogar desde Telegram con tecnología ESP32
-            </p>
-            
-            <p class="hero-description animate-fade-in-delay-3">
-                Sistema automatizado con 8 funciones integradas, pantalla OLED, 
-                asistente por voz y control remoto. La domótica del futuro en tus manos.
-            </p>
-            
-            <div class="hero-buttons animate-fade-in-delay-4">
-                <a href="#features" class="btn btn-primary">
-                    <i class="fas fa-rocket"></i>
-                    Ver Funciones
-                </a>
-                <a href="#demo" class="btn btn-outline">
-                    <i class="fab fa-telegram"></i>
-                    Probar Demo
-                </a>
+
+            <div class="gallery-section">
+                <h3 class="gallery-section-title">🎨 Logotipos</h3>
+                <div class="logos-grid" id="logos-grid"></div>
             </div>
-            
-            <div class="hero-stats animate-fade-in-delay-5">
-                <div class="stat-item">
-                    <div class="stat-number">8</div>
-                    <div class="stat-label">Funciones</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">24/7</div>
-                    <div class="stat-label">Monitoreo</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">100%</div>
-                    <div class="stat-label">Automatizado</div>
+
+            <div class="gallery-section">
+                <h3 class="gallery-section-title">📁 Carpeta de Proyecto</h3>
+                <div class="folder-section">
+                    <p style="margin-bottom: 1.5rem;">Accede a toda la documentación y archivos del proyecto:</p>
+                    <a href="https://drive.google.com/drive/folders/1example" target="_blank" class="btn btn-primary">📂 Abrir Carpeta de Proyecto</a>
+                    <p style="margin-top: 1.5rem; font-size: 0.9rem; color: #999;">Incluye: código fuente, esquemas, manuales, assets y más</p>
                 </div>
             </div>
         </div>
+    </section>
+
+    <section id="resources" class="resources scroll-animate">
+        <h2 class="section-title">Enlaces Útiles</h2>
+        <p class="section-subtitle">Accede a más información del proyecto</p>
         
-        <div class="scroll-indicator">
-            <i class="fas fa-chevron-down bounce"></i>
+        <div class="resources-grid">
+            <a href="https://github.com" target="_blank" class="resource-card">
+                <div class="resource-icon">🐙</div>
+                <h3>GitHub</h3>
+                <p>Código fuente y documentación</p>
+            </a>
+            <a href="https://youtube.com" target="_blank" class="resource-card">
+                <div class="resource-icon">▶️</div>
+                <h3>YouTube</h3>
+                <p>Tutoriales y demostraciones</p>
+            </a>
+            <a href="https://discord.com" target="_blank" class="resource-card">
+                <div class="resource-icon">💬</div>
+                <h3>Comunidad Discord</h3>
+                <p>Únete a nuestra comunidad</p>
+            </a>
+            <a href="https://docs.example.com" target="_blank" class="resource-card">
+                <div class="resource-icon">📚</div>
+                <h3>Documentación</h3>
+                <p>Guía técnica completa</p>
+            </a>
         </div>
     </section>
 
-    <!-- ============================================ -->
-    <!-- FUNCIONES DEL SISTEMA -->
-    <!-- ============================================ -->
-    <section id="features" class="section features">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="fas fa-cogs"></i>
-                    Funciones del Sistema
-                </h2>
-                <p class="section-subtitle">8 módulos inteligentes integrados en un solo dispositivo</p>
-            </div>
-            
-            <div id="features-grid" class="features-grid">
-                <!-- Las funciones se cargan dinámicamente desde config.js -->
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================ -->
-    <!-- CARACTERÍSTICAS TÉCNICAS -->
-    <!-- ============================================ -->
-    <section id="specs" class="section specs-section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="fas fa-microchip"></i>
-                    Especificaciones Técnicas
-                </h2>
-                <p class="section-subtitle">Hardware y tecnologías utilizadas</p>
-            </div>
-            
-            <div class="specs-container">
-                <div class="specs-visual">
-                    <div class="esp32-chip">
-                        <div class="chip-label">ESP32</div>
-                        <div class="chip-specs">
-                            <span>Dual Core 240MHz</span>
-                            <span>WiFi + Bluetooth</span>
-                            <span>520KB RAM</span>
-                        </div>
-                    </div>
+    <section id="chatbot" class="chatbot scroll-animate">
+        <h2 class="section-title">Asistente Inteligente</h2>
+        <p class="section-subtitle">Prueba la interfaz de chat de BOTHOGAR</p>
+        <div class="chat-container">
+            <div class="chat-header">BOTHOGAR Assistant</div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot">
+                    <div class="message-content">¡Hola! Soy BOTHOGAR. ¿Cómo puedo ayudarte hoy?</div>
                 </div>
-                
-                <div class="specs-list">
-                    <div class="spec-category">
-                        <h3><i class="fas fa-microchip"></i> Microcontrolador</h3>
-                        <ul id="specs-mcu">
-                            <!-- Carga dinámica desde config.js -->
-                        </ul>
-                    </div>
-                    
-                    <div class="spec-category">
-                        <h3><i class="fas fa-plug"></i> Sensores & Actuadores</h3>
-                        <ul id="specs-sensors">
-                            <!-- Carga dinámica desde config.js -->
-                        </ul>
-                    </div>
-                    
-                    <div class="spec-category">
-                        <h3><i class="fas fa-wifi"></i> Comunicación</h3>
-                        <ul id="specs-comm">
-                            <!-- Carga dinámica desde config.js -->
-                        </ul>
-                    </div>
-                    
-                    <div class="spec-category">
-                        <h3><i class="fas fa-desktop"></i> Interfaz Usuario</h3>
-                        <ul id="specs-ui">
-                            <!-- Carga dinámica desde config.js -->
-                        </ul>
-                    </div>
-                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Escribe tu mensaje...">
+                <button onclick="sendMessage()">Enviar</button>
             </div>
         </div>
     </section>
 
-    <!-- ============================================ -->
-    <!-- DEMO / TELEGRAM -->
-    <!-- ============================================ -->
-    <section id="demo" class="section demo-section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="fab fa-telegram"></i>
-                    Control por Telegram
-                </h2>
-                <p class="section-subtitle">Controla tu hogar desde cualquier lugar del mundo</p>
+    <section id="contact" class="contact scroll-animate">
+        <h2 class="section-title">Contacto e Información</h2>
+        <p class="section-subtitle">¿Preguntas o sugerencias? Nos encantaría saber de ti</p>
+        <div class="contact-content">
+            <div class="contact-info">
+                <h3>Información del Proyecto</h3>
+                <p>BOTHOGAR es un proyecto de código abierto enfocado en domótica inteligente. Estamos constantemente mejorando y añadiendo nuevas funciones.</p>
+                <p style="margin-top: 2rem; font-size: 0.9rem; color: #999;">Hecho con ❤️ usando ESP32 y Web Moderno</p>
             </div>
-            
-            <div class="demo-container">
-                <div class="demo-phone">
-                    <div class="phone-frame">
-                        <div class="phone-notch"></div>
-                        <div class="phone-screen">
-                            <div class="telegram-chat">
-                                <div class="telegram-header">
-                                    <img src="https://i.postimg.cc/tRL26mng/image-f-Hj-K7v-Rx-1768410739790-raw.jpg" alt="Bot">
-                                    <div>
-                                        <div class="bot-name">ESP32 Smart Home Bot</div>
-                                        <div class="bot-status">En línea</div>
-                                    </div>
-                                </div>
-                                <div class="telegram-messages" id="telegram-messages">
-                                    <!-- Mensajes de demo -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <form class="contact-form" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label for="name">Nombre</label>
+                    <input type="text" id="name" required>
                 </div>
-                
-                <div class="demo-info">
-                    <h3>¿Cómo funciona?</h3>
-                    <div class="demo-steps">
-                        <div class="demo-step">
-                            <div class="step-number">1</div>
-                            <div class="step-content">
-                                <h4>Conecta tu ESP32</h4>
-                                <p>Configura tu red WiFi y conecta el dispositivo</p>
-                            </div>
-                        </div>
-                        <div class="demo-step">
-                            <div class="step-number">2</div>
-                            <div class="step-content">
-                                <h4>Abre Telegram</h4>
-                                <p>Busca el bot y envía /start para comenzar</p>
-                            </div>
-                        </div>
-                        <div class="demo-step">
-                            <div class="step-number">3</div>
-                            <div class="step-content">
-                                <h4>¡Controla todo!</h4>
-                                <p>Usa comandos de voz o botones para controlar</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="demo-commands">
-                        <h4>Comandos disponibles:</h4>
-                        <div class="command-list">
-                            <code>/alimentar</code>
-                            <code>/regar</code>
-                            <code>/temperatura</code>
-                            <code>/luces</code>
-                            <code>/alarma</code>
-                            <code>/contador</code>
-                            <code>/gas</code>
-                            <code>/tacho</code>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label for="email">Correo</label>
+                    <input type="email" id="email" required>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label for="message">Mensaje</label>
+                    <textarea id="message" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+            </form>
         </div>
     </section>
 
-    <!-- ============================================ -->
-    <!-- SOBRE EL PROYECTO -->
-    <!-- ============================================ -->
-    <section id="about" class="section about">
-        <div class="container">
-            <div class="about-grid">
-                <div class="about-content">
-                    <h2 class="section-title">
-                        <i class="fas fa-project-diagram"></i>
-                        Sobre el Proyecto
-                    </h2>
-                    <p class="about-text">
-                        Este sistema domótico inteligente fue desarrollado utilizando la potente 
-                        plataforma <strong>ESP32</strong>, combinando hardware de última generación 
-                        con software optimizado para crear una solución de automatización del hogar 
-                        accesible y eficiente.
-                    </p>
-                    <p class="about-text">
-                        El proyecto integra <strong>8 funciones principales</strong> que cubren las 
-                        necesidades más importantes de un hogar moderno: desde el cuidado de mascotas 
-                        y plantas, hasta sistemas de seguridad y monitoreo ambiental.
-                    </p>
-                    <p class="about-text">
-                        La comunicación se realiza a través de <strong>Telegram</strong>, permitiendo 
-                        control remoto desde cualquier lugar. Además, cuenta con una pantalla 
-                        <strong>OLED</strong> para feedback visual y un sistema de <strong>alertas 
-                        sonoras</strong> para notificaciones importantes.
-                    </p>
-                    
-                    <div class="about-highlights">
-                        <div class="highlight">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Open Source</span>
-                        </div>
-                        <div class="highlight">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Bajo Consumo</span>
-                        </div>
-                        <div class="highlight">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Modular</span>
-                        </div>
-                        <div class="highlight">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Expandible</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="about-tech">
-                    <div class="tech-stack">
-                        <h3>Stack Tecnológico</h3>
-                        <div class="tech-item">
-                            <i class="fas fa-microchip"></i>
-                            <div>
-                                <strong>ESP32</strong>
-                                <span>Microcontrolador principal</span>
-                            </div>
-                        </div>
-                        <div class="tech-item">
-                            <i class="fab fa-telegram"></i>
-                            <div>
-                                <strong>Telegram Bot API</strong>
-                                <span>Control remoto</span>
-                            </div>
-                        </div>
-                        <div class="tech-item">
-                            <i class="fas fa-tv"></i>
-                            <div>
-                                <strong>Pantalla OLED</strong>
-                                <span>Feedback visual</span>
-                            </div>
-                        </div>
-                        <div class="tech-item">
-                            <i class="fas fa-code"></i>
-                            <div>
-                                <strong>Arduino IDE</strong>
-                                <span>Programación C++</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================ -->
-    <!-- FOOTER -->
-    <!-- ============================================ -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <img src="https://i.postimg.cc/tRL26mng/image-f-Hj-K7v-Rx-1768410739790-raw.jpg" alt="Logo" class="footer-logo">
-                    <h3 id="footer-project-name">ESP32 Smart Home</h3>
-                    <p>Sistema domótico inteligente con tecnología ESP32</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Enlaces Rápidos</h4>
-                    <ul class="footer-links">
-                        <li><a href="#features">Funciones</a></li>
-                        <li><a href="#specs">Especificaciones</a></li>
-                        <li><a href="#demo">Demo</a></li>
-                        <li><a href="#about">Sobre el Proyecto</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Recursos</h4>
-                    <ul class="footer-links">
-                        <li><a href="#" target="_blank">Documentación</a></li>
-                        <li><a href="#" target="_blank">GitHub Repository</a></li>
-                        <li><a href="#" target="_blank">Tutorial de Instalación</a></li>
-                        <li><a href="#" target="_blank">FAQ</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Contacto</h4>
-                    <div class="social-links">
-                        <a href="#" target="_blank" rel="noopener noreferrer" title="GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
-                        <a href="#" target="_blank" rel="noopener noreferrer" title="Telegram">
-                            <i class="fab fa-telegram"></i>
-                        </a>
-                        <a href="#" target="_blank" rel="noopener noreferrer" title="YouTube">
-                            <i class="fab fa-youtube"></i>
-                        </a>
-                        <a href="#" target="_blank" rel="noopener noreferrer" title="Instagram">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2024 <span id="footer-copyright">ESP32 Smart Home</span>. Proyecto Open Source.</p>
-                <p class="footer-tech">Built with <i class="fas fa-heart"></i> and ESP32</p>
-            </div>
-        </div>
+    <footer>
+        <p>&copy; 2024 BOTHOGAR. Asistente Doméstico Inteligente. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- ============================================ -->
-    <!-- CHATBOT ASISTENTE -->
-    <!-- ============================================ -->
-    <button id="chatbot-toggle" class="chatbot-toggle" aria-label="Asistente">
-        <i class="fas fa-robot"></i>
-    </button>
+    <script>
+        // FEATURES CONFIG
+        let features = [
+            { icon: '💡', title: 'Control de Luces', description: 'Enciende, apaga y controla el brillo de tus luces inteligentes.' },
+            { icon: '📊', title: 'Sensores Inteligentes', description: 'Monitorea temperatura, humedad y presencia en tiempo real.' },
+            { icon: '🔔', title: 'Alarmas y Alertas', description: 'Recibe notificaciones y configura alarmas automáticas.' },
+            { icon: '💬', title: 'Conversación IA', description: 'Interactúa con BOTHOGAR mediante lenguaje natural.' },
+            { icon: '🌡️', title: 'Control Climático', description: 'Gestiona la temperatura y climatización automáticamente.' },
+            { icon: '📱', title: 'Acceso Remoto', description: 'Controla tu hogar desde cualquier lugar del mundo.' }
+        ];
 
-    <div id="chatbot-container" class="chatbot-container hidden">
-        <div class="chatbot-header">
-            <div class="bot-avatar">
-                <i class="fas fa-robot"></i>
-            </div>
-            <div>
-                <h3>Asistente ESP32</h3>
-                <span class="bot-status-text">En línea</span>
-            </div>
-            <button id="chatbot-close" aria-label="Cerrar">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
+        function renderFeatures() {
+            const grid = document.getElementById('features-grid');
+            grid.innerHTML = '';
+            features.forEach((feature) => {
+                const card = document.createElement('div');
+                card.className = 'feature-card';
+                card.innerHTML = `<div class="feature-icon">${feature.icon}</div><h3>${feature.title}</h3><p>${feature.description}</p>`;
+                grid.appendChild(card);
+            });
+        }
 
-        <div id="chatbot-messages" class="chatbot-messages">
-            <!-- Los mensajes se agregan dinámicamente -->
-        </div>
+        function addFeature(icon, title, description) {
+            features.push({ icon, title, description });
+            renderFeatures();
+            console.log(`✅ Feature agregado: ${title}`);
+        }
 
-        <div id="chatbot-options" class="chatbot-options">
-            <!-- Las opciones se cargan desde config.js -->
-        </div>
+        function removeFeature(index) {
+            if (index >= 0 && index < features.length) {
+                features.splice(index, 1);
+                renderFeatures();
+                console.log(`❌ Feature eliminado`);
+            }
+        }
 
-        <div class="chatbot-input">
-            <input 
-                type="text" 
-                id="chatbot-input-field" 
-                placeholder="Escribe tu pregunta..."
-                autocomplete="off"
-            >
-            <button id="chatbot-send">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
-    </div>
+        function updateFeature(index, icon, title, description) {
+            if (index >= 0 && index < features.length) {
+                features[index] = { icon, title, description };
+                renderFeatures();
+                console.log(`✏️ Feature actualizado`);
+            }
+        }
 
-    <!-- ============================================ -->
-    <!-- SCRIPTS -->
-    <!-- ============================================ -->
-    <script src="config.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
-    <script src="config.js"></script>
-    <script src="script.js"></script>
+        renderFeatures();
+
+        // VIDEOS
+        const videos = [
+            { title: 'Presentación BOTHOGAR', description: 'Demo del sistema en funcionamiento', duration: '3:45' },
+            { title: 'Setup e Instalación', description: 'Guía paso a paso de configuración', duration: '12:30' },
+            { title: 'Casos de Uso', description: 'Ejemplos prácticos de automatización', duration: '8:15' }
+        ];
+
+        const videosGrid = document.getElementById('videos-grid');
+        videos.forEach((video) => {
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.innerHTML = `<div class="video-thumbnail"></div><div class="video-info"><h4>${video.title}</h4><p>${video.description}</p><p style="font-size: 0.8rem; margin-top: 0.5rem;">⏱️ ${video.duration}</p></div>`;
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', () => alert('🎬 Video: ' + video.title));
+            videosGrid.appendChild(card);
+        });
+
+        // LOGOS
+        const logos = [
+            { name: 'Logo Principal', emoji: '🤖' },
+            { name: 'Icono Simplificado', emoji: '⚡' },
+            { name: 'Isotipo', emoji: '🏠' }
+        ];
+
+        const logosGrid = document.getElementById('logos-grid');
+        logos.forEach((logo) => {
+            const card = document.createElement('div');
+            card.className = 'logo-card';
+            card.innerHTML = `<div class="logo-display">${logo.emoji}</div><div class="logo-info"><h4>${logo.name}</h4><p>Descargable en varios formatos</p></div>`;
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', () => alert('📥 ' + logo.name));
+            logosGrid.appendChild(card);
+        });
+
+        // TEMA OSCURO
+        const themeToggle = document.getElementById('theme-toggle');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && prefersDark)) {
+            document.body.classList.add('dark-mode');
+            themeToggle.textContent = '☀️';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggle.textContent = isDark ? '☀️' : '🌙';
+        });
+
+        // MENÚ MOBILE
+        const menuToggle = document.getElementById('menu-toggle');
+        const navLinks = document.getElementById('navbar-links');
+        menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
+
+        // SCROLL ANIMATIONS
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-animate').forEach(el => observer.observe(el));
+
+        // NAVBAR ACTIVE
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // CHATBOT
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const messages = document.getElementById('chat-messages');
+            if (input.value.trim()) {
+                const userMsg = document.createElement('div');
+                userMsg.className = 'message user';
+                userMsg.innerHTML = `<div class="message-content">${input.value}</div>`;
+                messages.appendChild(userMsg);
+                setTimeout(() => {
+                    const botMsg = document.createElement('div');
+                    botMsg.className = 'message bot';
+                    botMsg.innerHTML = `<div class="message-content">Entendido. Procesando tu solicitud...</div>`;
+                    messages.appendChild(botMsg);
+                    messages.scrollTop = messages.scrollHeight;
+                }, 500);
+                messages.scrollTop = messages.scrollHeight;
+                input.value = '';
+            }
+        }
+
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // FORM SUBMIT
+        function handleSubmit(e) {
+            e.preventDefault();
+            alert('¡Gracias por tu mensaje! Te contactaremos pronto.');
+            e.target.reset();
+        }
+    </script>
 </body>
 </html>
