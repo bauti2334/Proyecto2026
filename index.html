@@ -653,8 +653,8 @@
         const EMAIL_CONFIG = {
             serviceID: 'service_6pad8up',      // Tu Service ID
             templateID: 'template_fusm764',    // Tu Template ID
-            userID: 'NRfREGOnfSUrya8Rl',      // ← Reemplaza con tu User ID
-            recipientEmail: 'bothogarasistencia@gmail.com' // ← Tu email de Gmail
+            userID: 'AQUI_VA_TU_USER_ID',      // ← Reemplaza con tu User ID
+            recipientEmail: 'tu-email@gmail.com' // ← Tu email de Gmail
         };
 
         // FEATURES
@@ -889,33 +889,26 @@
             
             // Enviar a través de EmailJS
             const templateParams = {
-                to_email: EMAIL_CONFIG.recipientEmail,
                 from_name: name,
                 from_email: email,
                 message: message
             };
             
-            // Opción 1: Usando EmailJS (necesita configuración)
-            if (typeof emailjs !== 'undefined') {
-                emailjs.send(EMAIL_CONFIG.serviceID, EMAIL_CONFIG.templateID, templateParams, EMAIL_CONFIG.userID)
-                    .then(response => {
-                        alert('✅ ¡Mensaje enviado correctamente!');
-                        e.target.reset();
-                    })
-                    .catch(error => {
-                        alert('❌ Error al enviar el mensaje: ' + error);
-                    });
-            } else {
-                // Opción 2: Sin EmailJS (requiere backend)
-                alert('⚠️ Para enviar emails, configura EmailJS\n\nInstrucciones:\n1. Ve a https://www.emailjs.com\n2. Regístrate gratis\n3. Crea un servicio de email (Gmail)\n4. Copia tu Service ID, Template ID y User ID\n5. Pega los valores en EMAIL_CONFIG\n6. Incluye el script de EmailJS en el HTML');
-            }
+            emailjs.send(EMAIL_CONFIG.serviceID, EMAIL_CONFIG.templateID, templateParams, EMAIL_CONFIG.userID)
+                .then(response => {
+                    alert('✅ ¡Mensaje enviado correctamente!');
+                    e.target.reset();
+                })
+                .catch(error => {
+                    alert('❌ Error al enviar el mensaje: ' + error.text);
+                });
         }
     </script>
     
     <!-- EMAILJS SCRIPT -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/index.min.js"></script>
     <script type="text/javascript">
-        emailjs.init('NRfREGOnfSUrya8Rl'); // ← Reemplaza con tu User ID
+        emailjs.init('AQUI_VA_TU_USER_ID'); // ← Reemplaza con tu User ID
     </script>
 </body>
 </html>
