@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BOTHOGAR - Tu hogar inteligente</title>
     <link rel="icon" type="image/png" href="https://i.postimg.cc/rwXRzdjm/image-2-removebg-preview.png">
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
     <style>
         :root {
             --primary: #0f172e;
@@ -627,8 +628,8 @@
         <p>&copy; 2024 BOTHOGAR. Asistente Doméstico Inteligente. Todos los derechos reservados.</p>
     </footer>
 
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
     <script>
-        // VIDEO INTRO
         const introOverlay = document.getElementById('intro-overlay');
         const introVideo = document.getElementById('intro-video');
 
@@ -887,21 +888,23 @@
             const email = document.getElementById('email').value;
             const message = document.getElementById('message').value;
             
-            // Enviar a través de EmailJS
-            const templateParams = {
-                from_name: name,
-                from_email: email,
-                message: message
-            };
-            
-            emailjs.send(EMAIL_CONFIG.serviceID, EMAIL_CONFIG.templateID, templateParams, EMAIL_CONFIG.userID)
-                .then(response => {
+            // Enviar con SMTP.js
+            Email.send({
+                SecureToken: "18cea4b7-ecd8-485e-8f3f-fab7ee662342",
+                To: 'bothogarasistencia@gmail.com',
+                From: email,
+                Subject: `Nuevo mensaje de ${name}`,
+                Body: `<strong>Nombre:</strong> ${name}<br><strong>Email:</strong> ${email}<br><strong>Mensaje:</strong><br>${message}`
+            }).then(response => {
+                if (response === "OK") {
                     alert('✅ ¡Mensaje enviado correctamente!');
                     e.target.reset();
-                })
-                .catch(error => {
-                    alert('❌ Error al enviar el mensaje: ' + error.text);
-                });
+                } else {
+                    alert('❌ Error: ' + response);
+                }
+            }).catch(error => {
+                alert('❌ Error al enviar: ' + error);
+            });
         }
     </script>
     
