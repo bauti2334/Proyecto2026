@@ -450,7 +450,7 @@
     <!-- VIDEO INTRO -->
     <div class="intro-overlay" id="intro-overlay">
         <video class="intro-video" id="intro-video" autoplay muted>
-            <source src="https://github.com/bauti2334/Proyecto2026/blob/main/intro.mp4" type="video/mp4">
+            <source src="https://raw.githubusercontent.com/bauti2334/Proyecto2026/main/intro.mp4" type="video/mp4">
         </video>
         <button class="intro-skip" onclick="skipIntro()">Saltar ⏭️</button>
     </div>
@@ -648,6 +648,14 @@
             }
         }, 5000);
 
+        // CONFIGURACIÓN DE EMAIL
+        const EMAIL_CONFIG = {
+            serviceID: 'service_xxxxx',      // ← Reemplaza con tu Service ID de EmailJS
+            templateID: 'template_xxxxx',    // ← Reemplaza con tu Template ID de EmailJS
+            userID: 'xxxxxxx',               // ← Reemplaza con tu User ID de EmailJS
+            recipientEmail: 'tu-email@gmail.com' // ← Tu email de Gmail
+        };
+
         // FEATURES
         let features = [
             { icon: '💡', title: 'Control de Luces', description: 'Enciende, apaga y controla el brillo de tus luces inteligentes.' },
@@ -755,7 +763,89 @@
             });
         });
 
-        // CHATBOT
+        // CHATBOT CON MENÚ
+        const botMenus = {
+            inicio: {
+                text: '¿Qué te gustaría hacer?',
+                buttons: [
+                    { text: '💡 Control de Luces', action: () => sendBotMessage('Seleccionaste Control de Luces. ¿Qué acción deseas realizar?', 'luces') },
+                    { text: '🌡️ Control Climático', action: () => sendBotMessage('Seleccionaste Control Climático. ¿Qué temperatura prefieres?', 'clima') },
+                    { text: '📊 Ver Sensores', action: () => sendBotMessage('Los sensores están activos. Temperatura: 22°C, Humedad: 65%', 'inicio') },
+                    { text: '🔙 Volver', action: () => showBotMenu('inicio') }
+                ]
+            },
+            luces: {
+                text: 'Control de Luces',
+                buttons: [
+                    { text: '💡 Encender', action: () => sendBotMessage('Luces encendidas', 'luces') },
+                    { text: '⚫ Apagar', action: () => sendBotMessage('Luces apagadas', 'luces') },
+                    { text: '🔆 Aumentar Brillo', action: () => sendBotMessage('Brillo aumentado a 80%', 'luces') },
+                    { text: '🔅 Disminuir Brillo', action: () => sendBotMessage('Brillo reducido a 40%', 'luces') },
+                    { text: '🔙 Volver', action: () => showBotMenu('inicio') }
+                ]
+            },
+            clima: {
+                text: 'Control Climático',
+                buttons: [
+                    { text: '❄️ Bajar Temperatura', action: () => sendBotMessage('Temperatura reducida a 18°C', 'clima') },
+                    { text: '🔥 Subir Temperatura', action: () => sendBotMessage('Temperatura aumentada a 26°C', 'clima') },
+                    { text: '💨 Auto', action: () => sendBotMessage('Modo automático activado', 'clima') },
+                    { text: '🔙 Volver', action: () => showBotMenu('inicio') }
+                ]
+            }
+        };
+
+        function showBotMenu(menuKey) {
+            const menu = botMenus[menuKey];
+            const messages = document.getElementById('chat-messages');
+            
+            const botMsg = document.createElement('div');
+            botMsg.className = 'message bot';
+            botMsg.innerHTML = `<div class="message-content">${menu.text}</div>`;
+            messages.appendChild(botMsg);
+            
+            setTimeout(() => {
+                const buttonsContainer = document.createElement('div');
+                buttonsContainer.style.cssText = 'display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0;';
+                
+                menu.buttons.forEach(btn => {
+                    const button = document.createElement('button');
+                    button.style.cssText = `
+                        padding: 0.8rem;
+                        background: linear-gradient(135deg, var(--accent) 0%, #00b8cc 100%);
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                        transition: all 0.2s;
+                    `;
+                    button.textContent = btn.text;
+                    button.onmouseover = () => button.style.transform = 'scale(1.02)';
+                    button.onmouseout = () => button.style.transform = 'scale(1)';
+                    button.onclick = btn.action;
+                    buttonsContainer.appendChild(button);
+                });
+                
+                messages.appendChild(buttonsContainer);
+                messages.scrollTop = messages.scrollHeight;
+            }, 300);
+        }
+
+        function sendBotMessage(text, nextMenu = 'inicio') {
+            const messages = document.getElementById('chat-messages');
+            const botMsg = document.createElement('div');
+            botMsg.className = 'message bot';
+            botMsg.innerHTML = `<div class="message-content">${text}</div>`;
+            messages.appendChild(botMsg);
+            
+            messages.scrollTop = messages.scrollHeight;
+            
+            setTimeout(() => {
+                showBotMenu(nextMenu);
+            }, 500);
+        }
+
         function sendMessage() {
             const input = document.getElementById('chat-input');
             const messages = document.getElementById('chat-messages');
@@ -764,17 +854,22 @@
                 userMsg.className = 'message user';
                 userMsg.innerHTML = `<div class="message-content">${input.value}</div>`;
                 messages.appendChild(userMsg);
-                setTimeout(() => {
-                    const botMsg = document.createElement('div');
-                    botMsg.className = 'message bot';
-                    botMsg.innerHTML = `<div class="message-content">Entendido. Procesando...</div>`;
-                    messages.appendChild(botMsg);
-                    messages.scrollTop = messages.scrollHeight;
-                }, 500);
+                
                 messages.scrollTop = messages.scrollHeight;
                 input.value = '';
+                
+                setTimeout(() => {
+                    sendBotMessage('Entiendo tu solicitud. Volviendo al menú principal...', 'inicio');
+                }, 500);
             }
         }
+
+        // Mostrar menú inicial al cargar
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                showBotMenu('inicio');
+            }, 500);
+        });
 
         const chatInput = document.getElementById('chat-input');
         if (chatInput) {
@@ -783,12 +878,43 @@
             });
         }
 
-        // FORM
+        // FORM CON ENVÍO A EMAIL
         function handleSubmit(e) {
             e.preventDefault();
-            alert('¡Gracias! Te contactaremos pronto.');
-            e.target.reset();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            // Enviar a través de EmailJS
+            const templateParams = {
+                to_email: EMAIL_CONFIG.recipientEmail,
+                from_name: name,
+                from_email: email,
+                message: message
+            };
+            
+            // Opción 1: Usando EmailJS (necesita configuración)
+            if (typeof emailjs !== 'undefined') {
+                emailjs.send(EMAIL_CONFIG.serviceID, EMAIL_CONFIG.templateID, templateParams, EMAIL_CONFIG.userID)
+                    .then(response => {
+                        alert('✅ ¡Mensaje enviado correctamente!');
+                        e.target.reset();
+                    })
+                    .catch(error => {
+                        alert('❌ Error al enviar el mensaje: ' + error);
+                    });
+            } else {
+                // Opción 2: Sin EmailJS (requiere backend)
+                alert('⚠️ Para enviar emails, configura EmailJS\n\nInstrucciones:\n1. Ve a https://www.emailjs.com\n2. Regístrate gratis\n3. Crea un servicio de email (Gmail)\n4. Copia tu Service ID, Template ID y User ID\n5. Pega los valores en EMAIL_CONFIG\n6. Incluye el script de EmailJS en el HTML');
+            }
         }
     </script>
+    
+    <!-- EMAILJS SCRIPT (descomenta después de configurar) -->
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/index.min.js"></script>
+    <script type="text/javascript">
+        emailjs.init("TU_USER_ID_AQUI");
+    </script> -->
 </body>
 </html>
