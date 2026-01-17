@@ -23,6 +23,57 @@
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-light); color: var(--text-dark); line-height: 1.6; transition: background 0.3s, color 0.3s; }
         body.dark-mode { background: var(--bg-dark); color: var(--text-light); }
 
+        /* VIDEO INTRO */
+        .intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeOutIntro 0.5s ease-out 3.5s forwards;
+        }
+
+        .intro-overlay.hidden {
+            display: none !important;
+        }
+
+        .intro-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .intro-skip {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid white;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            z-index: 10000;
+            transition: all 0.3s ease;
+        }
+
+        .intro-skip:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeOutIntro {
+            0% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
         /* NAVBAR */
         nav {
             display: flex;
@@ -94,12 +145,11 @@
             padding: 4rem 2rem;
             min-height: 90vh;
             background: linear-gradient(135deg, var(--bg-light) 0%, var(--card-light) 100%);
-            animation: fadeIn 1s ease-in-out;
         }
 
         body.dark-mode .hero { background: linear-gradient(135deg, var(--bg-dark) 0%, var(--secondary) 100%); }
 
-        .hero-content { flex: 1; max-width: 600px; animation: slideInLeft 0.8s ease-out; }
+        .hero-content { flex: 1; max-width: 600px; }
         .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem; color: var(--primary); line-height: 1.2; }
         body.dark-mode .hero h1 { color: var(--text-light); }
 
@@ -114,11 +164,11 @@
         .btn-secondary { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
         .btn-secondary:hover { background: var(--accent); color: var(--primary); transform: translateY(-3px); }
 
-        .hero-image { flex: 1; display: flex; justify-content: center; align-items: center; animation: slideInRight 0.8s ease-out; }
+        .hero-image { flex: 1; display: flex; justify-content: center; align-items: center; }
         .hero-image img { width: 100%; max-width: 450px; height: auto; filter: drop-shadow(0 20px 40px rgba(0, 217, 255, 0.2)); }
 
         /* SECTIONS */
-        section { padding: 4rem 2rem; animation: fadeIn 0.8s ease-in-out; }
+        section { padding: 4rem 2rem; }
         .section-title { text-align: center; font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; color: var(--primary); }
         body.dark-mode .section-title { color: var(--text-light); }
         .section-subtitle { text-align: center; font-size: 1.1rem; color: #666; margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto; }
@@ -185,28 +235,35 @@
             border-radius: 12px;
             overflow: hidden;
             transition: all 0.3s ease;
-            cursor: pointer;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         body.dark-mode .video-card, body.dark-mode .logo-card { background: var(--card-dark); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
         .video-card:hover, .logo-card:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(0, 217, 255, 0.2); }
 
-        .video-thumbnail, .logo-display {
+        .video-thumbnail {
             width: 100%;
             height: 200px;
-            background: linear-gradient(135deg, var(--accent) 0%, #00b8cc 100%);
+            background: #000;
+        }
+
+        .video-thumbnail iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .logo-display {
+            width: 100%;
+            height: 200px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
+            background: var(--bg-light);
+            font-size: 4rem;
         }
 
-        .video-thumbnail::before {
-            content: '▶';
-            color: white;
-            font-size: 2rem;
-        }
+        body.dark-mode .logo-display { background: var(--card-dark); }
 
         .video-info, .logo-info { padding: 1.5rem; }
         .video-info h4, .logo-info h4 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--primary); }
@@ -289,7 +346,7 @@
         }
 
         .chat-messages { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
-        .message { display: flex; gap: 0.8rem; margin-bottom: 0.5rem; animation: slideIn 0.3s ease-out; }
+        .message { display: flex; gap: 0.8rem; margin-bottom: 0.5rem; }
         .message.user { justify-content: flex-end; }
 
         .message-content { max-width: 70%; padding: 0.8rem 1rem; border-radius: 12px; word-wrap: break-word; }
@@ -361,15 +418,6 @@
         footer { background: var(--primary); color: var(--text-light); text-align: center; padding: 2rem; margin-top: 3rem; }
         body.dark-mode footer { background: var(--bg-dark); border-top: 1px solid var(--border); }
 
-        /* ANIMATIONS */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideInLeft { from { transform: translateX(-50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes slideInRight { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes slideIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .scroll-animate { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
-        .scroll-animate.visible { opacity: 1; transform: translateY(0); }
-
         /* RESPONSIVE */
         @media (max-width: 768px) {
             .navbar-links { display: none; }
@@ -384,6 +432,7 @@
                 background: rgba(255, 255, 255, 0.98);
                 padding: 1.5rem;
                 gap: 1rem;
+                z-index: 999;
             }
             body.dark-mode .navbar-links.active { background: rgba(10, 14, 26, 0.98); }
             .hero { flex-direction: column; padding: 2rem; min-height: auto; }
@@ -398,6 +447,14 @@
     </style>
 </head>
 <body>
+    <!-- VIDEO INTRO -->
+    <div class="intro-overlay" id="intro-overlay">
+        <video class="intro-video" id="intro-video" autoplay muted>
+            <source src="https://github.com/bauti2334/Proyecto2026/blob/main/intro.mp4" type="video/mp4">
+        </video>
+        <button class="intro-skip" onclick="skipIntro()">Saltar ⏭️</button>
+    </div>
+
     <nav>
         <a href="#home" class="navbar-brand">
             <img src="https://i.postimg.cc/PrxWbkb9/image-f-Hj-K7v-Rx-1768410739790-raw.jpg" alt="Logo">
@@ -417,7 +474,7 @@
         </div>
     </nav>
 
-    <section id="home" class="hero scroll-animate">
+    <section id="home" class="hero">
         <div class="hero-content">
             <h1>BOTHOGAR</h1>
             <p class="slogan">Tu hogar, conectado e inteligente</p>
@@ -432,7 +489,7 @@
         </div>
     </section>
 
-    <section id="about" class="about scroll-animate">
+    <section id="about" class="about">
         <h2 class="section-title">¿Qué es BOTHOGAR?</h2>
         <p class="section-subtitle">Un sistema inteligente que transforma tu hogar en un espacio conectado y automatizado</p>
         <div class="about-content">
@@ -461,13 +518,13 @@
         </div>
     </section>
 
-    <section id="features" class="features scroll-animate">
+    <section id="features" class="features">
         <h2 class="section-title">Funciones Principales</h2>
         <p class="section-subtitle">Todo lo que necesitas para automatizar tu hogar</p>
         <div class="features-grid" id="features-grid"></div>
     </section>
 
-    <section id="gallery" class="gallery scroll-animate">
+    <section id="gallery" class="gallery">
         <h2 class="section-title">Galería Multimedia</h2>
         <p class="section-subtitle">Videos, logotipos y recursos del proyecto</p>
         
@@ -486,14 +543,14 @@
                 <h3 class="gallery-section-title">📁 Carpeta de Proyecto</h3>
                 <div class="folder-section">
                     <p style="margin-bottom: 1.5rem;">Accede a toda la documentación y archivos del proyecto:</p>
-                    <a href="https://drive.google.com/drive/folders/1example" target="_blank" class="btn btn-primary">📂 Abrir Carpeta de Proyecto</a>
-                    <p style="margin-top: 1.5rem; font-size: 0.9rem; color: #999;">Incluye: código fuente, esquemas, manuales, assets y más</p>
+                    <a href="https://drive.google.com/drive/folders/1example" target="_blank" class="btn btn-primary">📂 Abrir Carpeta</a>
+                    <p style="margin-top: 1.5rem; font-size: 0.9rem; color: #999;">Código, esquemas, manuales y más</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="resources" class="resources scroll-animate">
+    <section id="resources" class="resources">
         <h2 class="section-title">Enlaces Útiles</h2>
         <p class="section-subtitle">Accede a más información del proyecto</p>
         
@@ -521,7 +578,7 @@
         </div>
     </section>
 
-    <section id="chatbot" class="chatbot scroll-animate">
+    <section id="chatbot" class="chatbot">
         <h2 class="section-title">Asistente Inteligente</h2>
         <p class="section-subtitle">Prueba la interfaz de chat de BOTHOGAR</p>
         <div class="chat-container">
@@ -538,7 +595,7 @@
         </div>
     </section>
 
-    <section id="contact" class="contact scroll-animate">
+    <section id="contact" class="contact">
         <h2 class="section-title">Contacto e Información</h2>
         <p class="section-subtitle">¿Preguntas o sugerencias? Nos encantaría saber de ti</p>
         <div class="contact-content">
@@ -570,7 +627,28 @@
     </footer>
 
     <script>
-        // FEATURES CONFIG
+        // VIDEO INTRO
+        const introOverlay = document.getElementById('intro-overlay');
+        const introVideo = document.getElementById('intro-video');
+
+        function skipIntro() {
+            introOverlay.classList.add('hidden');
+            if (introVideo) introVideo.pause();
+        }
+
+        if (introVideo) {
+            introVideo.addEventListener('ended', () => {
+                introOverlay.classList.add('hidden');
+            });
+        }
+
+        setTimeout(() => {
+            if (introOverlay && !introOverlay.classList.contains('hidden')) {
+                skipIntro();
+            }
+        }, 5000);
+
+        // FEATURES
         let features = [
             { icon: '💡', title: 'Control de Luces', description: 'Enciende, apaga y controla el brillo de tus luces inteligentes.' },
             { icon: '📊', title: 'Sensores Inteligentes', description: 'Monitorea temperatura, humedad y presencia en tiempo real.' },
@@ -582,6 +660,7 @@
 
         function renderFeatures() {
             const grid = document.getElementById('features-grid');
+            if (!grid) return;
             grid.innerHTML = '';
             features.forEach((feature) => {
                 const card = document.createElement('div');
@@ -594,43 +673,34 @@
         function addFeature(icon, title, description) {
             features.push({ icon, title, description });
             renderFeatures();
-            console.log(`✅ Feature agregado: ${title}`);
-        }
-
-        function removeFeature(index) {
-            if (index >= 0 && index < features.length) {
-                features.splice(index, 1);
-                renderFeatures();
-                console.log(`❌ Feature eliminado`);
-            }
-        }
-
-        function updateFeature(index, icon, title, description) {
-            if (index >= 0 && index < features.length) {
-                features[index] = { icon, title, description };
-                renderFeatures();
-                console.log(`✏️ Feature actualizado`);
-            }
         }
 
         renderFeatures();
 
         // VIDEOS
         const videos = [
-            { title: 'Presentación BOTHOGAR', description: 'Demo del sistema en funcionamiento', duration: '3:45' },
-            { title: 'Setup e Instalación', description: 'Guía paso a paso de configuración', duration: '12:30' },
-            { title: 'Casos de Uso', description: 'Ejemplos prácticos de automatización', duration: '8:15' }
+            { title: 'Presentación BOTHOGAR', description: 'Demo del sistema', youtubeId: 'dQw4w9WgXcQ' },
+            { title: 'Setup e Instalación', description: 'Guía de configuración', youtubeId: 'jNQXAC9IVRw' },
+            { title: 'Casos de Uso', description: 'Ejemplos prácticos', youtubeId: '9bZkp7q19f0' }
         ];
 
         const videosGrid = document.getElementById('videos-grid');
-        videos.forEach((video) => {
-            const card = document.createElement('div');
-            card.className = 'video-card';
-            card.innerHTML = `<div class="video-thumbnail"></div><div class="video-info"><h4>${video.title}</h4><p>${video.description}</p><p style="font-size: 0.8rem; margin-top: 0.5rem;">⏱️ ${video.duration}</p></div>`;
-            card.style.cursor = 'pointer';
-            card.addEventListener('click', () => alert('🎬 Video: ' + video.title));
-            videosGrid.appendChild(card);
-        });
+        if (videosGrid) {
+            videos.forEach((video) => {
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.innerHTML = `
+                    <div class="video-thumbnail">
+                        <iframe src="https://www.youtube.com/embed/${video.youtubeId}" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h4>${video.title}</h4>
+                        <p>${video.description}</p>
+                    </div>
+                `;
+                videosGrid.appendChild(card);
+            });
+        }
 
         // LOGOS
         const logos = [
@@ -640,14 +710,20 @@
         ];
 
         const logosGrid = document.getElementById('logos-grid');
-        logos.forEach((logo) => {
-            const card = document.createElement('div');
-            card.className = 'logo-card';
-            card.innerHTML = `<div class="logo-display">${logo.emoji}</div><div class="logo-info"><h4>${logo.name}</h4><p>Descargable en varios formatos</p></div>`;
-            card.style.cursor = 'pointer';
-            card.addEventListener('click', () => alert('📥 ' + logo.name));
-            logosGrid.appendChild(card);
-        });
+        if (logosGrid) {
+            logos.forEach((logo) => {
+                const card = document.createElement('div');
+                card.className = 'logo-card';
+                card.innerHTML = `
+                    <div class="logo-display">${logo.emoji}</div>
+                    <div class="logo-info">
+                        <h4>${logo.name}</h4>
+                        <p>Descargable en varios formatos</p>
+                    </div>
+                `;
+                logosGrid.appendChild(card);
+            });
+        }
 
         // TEMA OSCURO
         const themeToggle = document.getElementById('theme-toggle');
@@ -667,19 +743,10 @@
         // MENÚ MOBILE
         const menuToggle = document.getElementById('menu-toggle');
         const navLinks = document.getElementById('navbar-links');
-        menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
+        }
 
-        // SCROLL ANIMATIONS
-        const observerOptions = { threshold: 0.1 };
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('visible');
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.scroll-animate').forEach(el => observer.observe(el));
-
-        // NAVBAR ACTIVE
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', () => {
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -700,7 +767,7 @@
                 setTimeout(() => {
                     const botMsg = document.createElement('div');
                     botMsg.className = 'message bot';
-                    botMsg.innerHTML = `<div class="message-content">Entendido. Procesando tu solicitud...</div>`;
+                    botMsg.innerHTML = `<div class="message-content">Entendido. Procesando...</div>`;
                     messages.appendChild(botMsg);
                     messages.scrollTop = messages.scrollHeight;
                 }, 500);
@@ -709,14 +776,17 @@
             }
         }
 
-        document.getElementById('chat-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
+        const chatInput = document.getElementById('chat-input');
+        if (chatInput) {
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+        }
 
-        // FORM SUBMIT
+        // FORM
         function handleSubmit(e) {
             e.preventDefault();
-            alert('¡Gracias por tu mensaje! Te contactaremos pronto.');
+            alert('¡Gracias! Te contactaremos pronto.');
             e.target.reset();
         }
     </script>
